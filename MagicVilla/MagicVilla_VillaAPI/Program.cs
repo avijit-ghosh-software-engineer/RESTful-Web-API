@@ -1,6 +1,8 @@
 using MagicVilla_VillaAPI;
 using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Logger;
+using MagicVilla_VillaAPI.Repository;
+using MagicVilla_VillaAPI.Repository.IRepostiory;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -16,6 +18,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Custom logging
 //builder.Services.AddSingleton<ILogging, LoggingV2>();
+
+builder.Services.AddScoped<IVillaRepository, VillaRepository>();
+builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
