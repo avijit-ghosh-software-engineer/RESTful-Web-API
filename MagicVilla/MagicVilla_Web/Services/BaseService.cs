@@ -49,10 +49,10 @@ namespace MagicVilla_Web.Services
                 }
 
                 HttpResponseMessage response = null;
-                //if (!string.IsNullOrEmpty(apiRequest.Token))
-                //{
-                //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
-                //}
+                if (!string.IsNullOrEmpty(request.Token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.Token);
+                }
                 response = await client.SendAsync(message);
                 var apiContent = await response.Content.ReadAsStringAsync();
                 try
