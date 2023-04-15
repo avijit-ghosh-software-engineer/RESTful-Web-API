@@ -40,14 +40,9 @@ namespace MagicVilla_VillaAPI.Controllers.v2
         //    _logger = logger;
         //}
 
-        [HttpGet("GetString")]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "String1", "string2" };
-        }
-
-
+       
         [HttpGet]
+        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetVillaNumbers()
         {
@@ -69,6 +64,7 @@ namespace MagicVilla_VillaAPI.Controllers.v2
         }
 
         [HttpGet("{villaNo:int}", Name = "GetVillaNumber")]
+        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

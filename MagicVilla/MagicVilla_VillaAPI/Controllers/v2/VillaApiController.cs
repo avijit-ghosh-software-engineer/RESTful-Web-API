@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using MagicVilla_VillaAPI.Data;
-using MagicVilla_VillaAPI.Logger;
 using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dtos;
 using MagicVilla_VillaAPI.Repository.IRepostiory;
@@ -8,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.Json;
 
 namespace MagicVilla_VillaAPI.Controllers.v2
 {
@@ -35,13 +34,32 @@ namespace MagicVilla_VillaAPI.Controllers.v2
         //}
 
         [HttpGet]
+        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetVillas()
+        public async Task<ActionResult<APIResponse>> GetVillas([FromQuery(Name = "filterOccupancy")] int? occupancy,
+            [FromQuery]string? search, [FromQuery] int pageNumber=1, [FromQuery] int pageSize=3)
         {
             try
             {
                 _logger.LogInformation("Get all villas", "info");
-                IEnumerable<Villa> villas = await _villaRepository.GetAllAsync();
+                IEnumerable<Villa> villas;
+                if (occupancy > 0)
+                {
+                    villas = await _villaRepository.GetAllAsync(x => x.Occupancy == occupancy, pageNumber: pageNumber, pageSize: pageSize);
+                }
+                else
+                {
+                    villas = await _villaRepository.GetAllAsync(pageNumber: pageNumber,pageSize: pageSize);
+                }
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    villas = villas.Where(x=>x.Name.ToLower().Contains(search.ToLower()));
+                }
+
+                Pagination pagination = new() { PageNumber = pageNumber,PageSize=pageSize};
+                Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+
                 _response.Result = _mapper.Map<List<VillaDto>>(villas);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -56,6 +74,7 @@ namespace MagicVilla_VillaAPI.Controllers.v2
         }
 
         [HttpGet("{id:int}", Name = "GetVilla")]
+        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
