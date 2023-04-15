@@ -1,16 +1,6 @@
-using MagicVilla_VillaAPI;
 using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Extensions;
-using MagicVilla_VillaAPI.Logger;
-using MagicVilla_VillaAPI.Repository;
-using MagicVilla_VillaAPI.Repository.IRepostiory;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Serilog;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +30,9 @@ builder.Services.AddControllers(options=> {
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddResponseCaching();
+
+
+
 
 var app = builder.Build();
 

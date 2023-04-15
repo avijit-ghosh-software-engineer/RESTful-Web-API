@@ -37,7 +37,7 @@ namespace MagicVilla_VillaAPI.Controllers.v2
         [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetVillas([FromQuery(Name = "filterOccupancy")] int? occupancy,
-            [FromQuery]string? search, [FromQuery] int pageNumber=1, [FromQuery] int pageSize=3)
+            [FromQuery]string? search, [FromQuery] int pageNumber=1, [FromQuery] int pageSize=0)
         {
             try
             {
@@ -120,7 +120,8 @@ namespace MagicVilla_VillaAPI.Controllers.v2
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<APIResponse>> CreateVilla([FromBody] VillaCreateDTO createDTO)
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<ActionResult<APIResponse>> CreateVilla([FromBody] VillaCreateDTO createDTO)
         {
             try
             {

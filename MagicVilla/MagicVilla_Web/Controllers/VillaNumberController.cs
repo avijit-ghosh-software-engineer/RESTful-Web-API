@@ -70,10 +70,14 @@ namespace MagicVilla_Web.Controllers
                 }
                 else
                 {
-                    if (response.ErrorMessages.Count > 0)
+                    if (response != null && response?.ErrorMessages.Count > 0)
                     {
-                        ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
+                        ModelState.AddModelError("ErrorMessages", response?.ErrorMessages.FirstOrDefault());
                     }
+                    else
+                    {
+						ModelState.AddModelError("ErrorMessages", "Error encountered.");
+					}
                 }
             }
 
@@ -135,11 +139,15 @@ namespace MagicVilla_Web.Controllers
                 }
                 else
                 {
-                    if (response.ErrorMessages.Count > 0)
-                    {
-                        ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
-                    }
-                }
+					if (response != null && response?.ErrorMessages.Count > 0)
+					{
+						ModelState.AddModelError("ErrorMessages", response?.ErrorMessages.FirstOrDefault());
+					}
+					else
+					{
+						ModelState.AddModelError("ErrorMessages", "Error encountered.");
+					}
+				}
             }
 
             var resp = await _villaService.GetAllAsync<APIResponse>();
@@ -195,8 +203,10 @@ namespace MagicVilla_Web.Controllers
                 TempData["success"] = "Villa number deleted successfully";
                 return RedirectToAction(nameof(IndexVillaNumber));
             }
-            TempData["error"] = "Error encountered.";
-            return View(model);
+			string errorMsg = response?.ErrorMessages.FirstOrDefault();
+
+			TempData["error"] = !string.IsNullOrEmpty(errorMsg) ? errorMsg : "Error encountered.";
+			return View(model);
         }
     }
 }

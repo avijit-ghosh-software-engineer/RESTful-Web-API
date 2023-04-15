@@ -11,8 +11,8 @@ namespace MagicVilla_VillaAPI.Extensions
             builder.Services.AddAutoMapper(typeof(MappingConfig));
             builder.ApiVersionsContainer();
             builder.ConnectionStringContainer();
-            builder.JWTAuthenticationContainer();
             builder.SwaggerGenContainer();
-        }
+			builder.JWTAuthenticationContainer();
+		}
     }
 }

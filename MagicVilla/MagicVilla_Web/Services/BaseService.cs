@@ -53,7 +53,8 @@ namespace MagicVilla_Web.Services
                 {
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.Token);
                 }
-                response = await client.SendAsync(message);
+                
+				response = await client.SendAsync(message);
                 var apiContent = await response.Content.ReadAsStringAsync();
                 try
                 {
