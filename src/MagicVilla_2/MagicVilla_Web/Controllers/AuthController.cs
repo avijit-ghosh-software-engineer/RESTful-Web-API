@@ -9,6 +9,8 @@ using System.Security.Claims;
 using MagicVilla_Web.Services.IServices;
 using MagicVilla_Web.Models;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MagicVilla_Web.Controllers
 {
@@ -61,6 +63,7 @@ namespace MagicVilla_Web.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            ViewBag.RoleList = GetRoles();
             return View();
         }
 
@@ -69,11 +72,16 @@ namespace MagicVilla_Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterationRequestDTO obj)
         {
+            if (string.IsNullOrEmpty(obj.Role))
+            {
+                obj.Role = SD.Customer;
+            }
             APIResponse result = await _authService.RegisterAsync<APIResponse>(obj);
             if (result != null && result.IsSuccess)
             {
                 return RedirectToAction("Login");
             }
+            ViewBag.RoleList = GetRoles();
             return View();
         }
 
@@ -89,6 +97,14 @@ namespace MagicVilla_Web.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+        private List<SelectListItem> GetRoles()
+        {
+            return new List<SelectListItem> {
+                new SelectListItem {Text = SD.Admin,Value = SD.Admin},
+                new SelectListItem {Text = SD.Customer,Value = SD.Customer}
+            };
         }
     }
 }
