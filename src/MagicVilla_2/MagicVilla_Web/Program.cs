@@ -7,8 +7,6 @@ builder.Services.AddControllersWithViews();
 
 builder.BaseContainer();
 
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
 builder.Services.AddDistributedMemoryCache();
 
 

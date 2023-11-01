@@ -11,20 +11,29 @@ namespace MagicVilla_Web.Services
     {
         public IHttpClientFactory _httpClient { get; set; }
         public APIResponse responseModel { get; set; }
-        //private readonly ITokenProvider _tokenProvider;
+        private readonly ITokenProvider _tokenProvider;
         //private readonly IApiMessageRequestBuilder _apiMessageRequestBuilder;
-        protected readonly string VillaApiUrl;
-        private IHttpContextAccessor _httpContextAccessor;
-        public BaseService(IHttpClientFactory httpClient)
+        //protected readonly string VillaApiUrl;
+        //private IHttpContextAccessor _httpContextAccessor;
+        public BaseService(IHttpClientFactory httpClient, ITokenProvider tokenProvider)
         {
             this.responseModel = new();
-            this._httpClient = httpClient;
+            _httpClient = httpClient;
+            _tokenProvider = tokenProvider;
         }
-        public async Task<T> SendAsync<T>(APIRequest request)
+        public async Task<T> SendAsync<T>(APIRequest request, bool withBearer = true)
         {
             try
             {
                 var client = _httpClient.CreateClient("MagicVillaApi");
+
+                if (withBearer && _tokenProvider.GetToken() != null)
+                {
+                    var token = _tokenProvider.GetToken();
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", token.AccessToken);
+                }
+
                 HttpRequestMessage message = new HttpRequestMessage();
                 message.RequestUri = new Uri(request.Url);
 
