@@ -113,7 +113,7 @@ namespace MagicVilla_VillaAPI.Repository
                     new Claim(ClaimTypes.Role, roles.FirstOrDefault()),
                     new Claim(JwtRegisteredClaimNames.Jti, jwtTokenId),
                     new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                    new Claim(JwtRegisteredClaimNames.Aud, "dotnetmastery.com")
+                    new Claim(JwtRegisteredClaimNames.Aud, "dotnetmastery.com") //Audience
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(1),
                 Issuer = "https://magicvilla-api.com",

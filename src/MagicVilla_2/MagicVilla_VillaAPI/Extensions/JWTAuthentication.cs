@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using MagicVilla_VillaAPI.Data;
-using MagicVilla_VillaAPI.Models;
-using Microsoft.AspNetCore.Identity;
 
 namespace MagicVilla_VillaAPI.Extensions
 {
@@ -11,7 +8,6 @@ namespace MagicVilla_VillaAPI.Extensions
     {
         public static void JWTAuthenticationContainer(this WebApplicationBuilder builder)
         {
-			builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 			var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
             builder.Services.AddAuthentication(x =>
             {
@@ -23,12 +19,14 @@ namespace MagicVilla_VillaAPI.Extensions
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
-                };
+					ValidateIssuerSigningKey = true,
+					IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+					ValidateIssuer = true,
+					ValidIssuer = "https://magicvilla-api.com",
+					ValidAudience = "dotnetmastery.com",
+					ValidateAudience = true,
+					ClockSkew = TimeSpan.Zero
+				};
             });
         }
     }

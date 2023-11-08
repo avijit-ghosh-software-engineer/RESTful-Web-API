@@ -1,6 +1,5 @@
 using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,15 +34,23 @@ builder.Services.AddResponseCaching();
 
 
 var app = builder.Build();
+app.UseSwagger();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options => {
-        options.SwaggerEndpoint("/swagger/v2/swagger.json", "Magic_VillaV2"); 
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_VillaV1");
-    });
+	app.UseSwaggerUI(options => {
+		options.SwaggerEndpoint("/swagger/v2/swagger.json", "Magic_VillaV2");
+		options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_VillaV1");
+	});
+}
+else
+{
+	app.UseSwaggerUI(options => {
+		options.SwaggerEndpoint("/swagger/v2/swagger.json", "Magic_VillaV2");
+		options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_VillaV1");
+		options.RoutePrefix = "";
+	});
 }
 
 using (var scope = app.Services.CreateScope())
@@ -59,4 +66,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.ApplyMigration();
+
 app.Run();
+
