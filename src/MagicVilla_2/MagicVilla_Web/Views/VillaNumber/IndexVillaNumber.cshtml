@@ -1,4 +1,5 @@
-﻿@model IEnumerable<VillaNumberDTO>
+﻿@using MagicVilla_Utility
+@model IEnumerable<VillaNumberDTO>
 <br />
 <div class="container p-4 border">
     <div class="row pb-2">
@@ -32,11 +33,10 @@
 					<td>@item.Villa.Name</td>
 					<td>@item.VillaNo</td>
 					<td>
-						@if (User.Identity.IsAuthenticated)
+						@if (User.IsInRole(SD.Admin))
 						{
 							<a asp-controller="VillaNumber" asp-action="UpdateVillaNumber" asp-route-villaNo="@item.VillaNo" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
 							<a asp-controller="VillaNumber" asp-action="DeleteVillaNumber" asp-route-villaNo="@item.VillaNo" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
-					
 						}
 					</td>
 				</tr>

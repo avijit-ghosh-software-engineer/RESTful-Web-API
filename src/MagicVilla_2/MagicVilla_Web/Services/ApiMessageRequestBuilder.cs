@@ -3,6 +3,7 @@ using MagicVilla_Web.Models;
 using MagicVilla_Web.Services.IServices;
 using Newtonsoft.Json;
 using System.Text;
+using static MagicVilla_Utility.SD;
 
 namespace MagicVilla_Web.Services
 {
@@ -11,11 +12,18 @@ namespace MagicVilla_Web.Services
         public HttpRequestMessage Build(APIRequest apiRequest)
         {
             HttpRequestMessage message = new();
-            message.RequestUri = new Uri(apiRequest.Url);
-
-            if (apiRequest.ContentType == SD.ContentType.MultipartFormData)
+            if (apiRequest.ContentType == ContentType.MultipartFormData)
             {
                 message.Headers.Add("Accept", "*/*");
+            }
+            else
+            {
+                message.Headers.Add("Accept", "application/json");
+            }
+            message.RequestUri = new Uri(apiRequest.Url);
+
+            if (apiRequest.ContentType == ContentType.MultipartFormData)
+            {
                 var content = new MultipartFormDataContent();
 
                 foreach (var prop in apiRequest.Data.GetType().GetProperties())
@@ -39,7 +47,6 @@ namespace MagicVilla_Web.Services
             }
             else
             {
-                message.Headers.Add("Accept", "application/json");
                 if (apiRequest.Data != null)
                 {
                     message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Data),

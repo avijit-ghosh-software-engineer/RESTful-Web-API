@@ -8,13 +8,11 @@ namespace MagicVilla_Web.Services
     public class AuthService : IAuthService
     {
         private readonly IBaseService _baseService;
-        private readonly IHttpClientFactory _clientFactory;
         private string villaUrl;
 
-        public AuthService(IHttpClientFactory clientFactory, IConfiguration configuration, IBaseService baseService)
+        public AuthService(IConfiguration configuration, IBaseService baseService)
         {
-            _clientFactory = clientFactory;
-            villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAuth");
+            villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
             _baseService = baseService;
         }
 
@@ -24,7 +22,7 @@ namespace MagicVilla_Web.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = obj,
-                Url = villaUrl + "login"
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/Users/Login"
             },withBearer:false);
         }
 
@@ -34,8 +32,18 @@ namespace MagicVilla_Web.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = obj,
-                Url = villaUrl + "register"
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/Users/Register"
             }, withBearer: false);
+        }
+
+        public async Task<T> LogoutAsync<T>(TokenDTO obj)
+        {
+            return await _baseService.SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = obj,
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/Users/RevokeRefreshToken"
+            });
         }
     }
 }

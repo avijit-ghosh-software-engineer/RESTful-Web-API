@@ -8,11 +8,9 @@ namespace MagicVilla_Web.Services
     public class VillaService : IVillaService
     {
         private readonly IBaseService _baseService;
-        private readonly IHttpClientFactory _httpClient;
         private string villaUrl;
-        public VillaService(IHttpClientFactory httpClient, IConfiguration configuration,IBaseService baseService)
+        public VillaService(IConfiguration configuration,IBaseService baseService)
         {
-            _httpClient = httpClient;
             villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
             _baseService = baseService;
         }
@@ -22,7 +20,7 @@ namespace MagicVilla_Web.Services
             return await _baseService.SendAsync<T>(new APIRequest() { 
                 ApiType = SD.ApiType.POST,
                 Data = dto,
-                Url = villaUrl,
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/VillaAPI",
                 ContentType = SD.ContentType.MultipartFormData
             });
         }
@@ -32,7 +30,7 @@ namespace MagicVilla_Web.Services
             return await _baseService.SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.DELETE,
-                Url = villaUrl+"/"+id
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/VillaAPI/" +id
             });
         }
 
@@ -41,7 +39,7 @@ namespace MagicVilla_Web.Services
             return await _baseService.SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = villaUrl
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/VillaAPI"
             });
         }
 
@@ -50,7 +48,7 @@ namespace MagicVilla_Web.Services
             return await _baseService.SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = villaUrl + "/" + id
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/VillaAPI/" + id
             });
         }
 
@@ -60,7 +58,7 @@ namespace MagicVilla_Web.Services
             {
                 ApiType = SD.ApiType.PUT,
                 Data = dto,
-                Url = villaUrl + "/" + dto.Id,
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/VillaAPI/" + dto.Id,
                 ContentType = SD.ContentType.MultipartFormData
             });
         }

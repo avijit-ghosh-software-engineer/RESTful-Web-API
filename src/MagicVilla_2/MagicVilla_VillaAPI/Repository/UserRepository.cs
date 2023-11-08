@@ -122,8 +122,8 @@ namespace MagicVilla_VillaAPI.Repository
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return tokenHandler.WriteToken(token);
+            var tokenStr = tokenHandler.WriteToken(token);
+            return tokenStr;
         }
 
         public async Task<TokenDTO> RefreshAccessToken(TokenDTO tokenDTO)
@@ -241,10 +241,10 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
 
-        private Task MarkTokenAsInvalid(RefreshToken refreshToken)
+        private async Task MarkTokenAsInvalid(RefreshToken refreshToken)
         {
             refreshToken.IsValid = false;
-            return _appDbContext.SaveChangesAsync();
+            await _appDbContext.SaveChangesAsync();
         }
     }
 }

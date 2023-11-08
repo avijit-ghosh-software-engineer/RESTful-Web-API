@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using MagicVilla_Utility;
 using MagicVilla_Web.Models;
 using MagicVilla_Web.Models.Dtos;
 using MagicVilla_Web.Models.VM;
 using MagicVilla_Web.Services.IServices;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -70,14 +68,8 @@ namespace MagicVilla_Web.Controllers
                 }
                 else
                 {
-                    if (response != null && response?.ErrorMessages.Count > 0)
-                    {
-                        ModelState.AddModelError("ErrorMessages", response?.ErrorMessages.FirstOrDefault());
-                    }
-                    else
-                    {
-						ModelState.AddModelError("ErrorMessages", "Error encountered.");
-					}
+                    TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+                        response.ErrorMessages[0] : "Error Encountered";
                 }
             }
 
@@ -118,7 +110,6 @@ namespace MagicVilla_Web.Controllers
                 return View(villaNumberVM);
             }
 
-
             return NotFound();
         }
 
@@ -139,15 +130,9 @@ namespace MagicVilla_Web.Controllers
                 }
                 else
                 {
-					if (response != null && response?.ErrorMessages.Count > 0)
-					{
-						ModelState.AddModelError("ErrorMessages", response?.ErrorMessages.FirstOrDefault());
-					}
-					else
-					{
-						ModelState.AddModelError("ErrorMessages", "Error encountered.");
-					}
-				}
+                    TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+                        response.ErrorMessages[0] : "Error Encountered";
+                }
             }
 
             var resp = await _villaService.GetAllAsync<APIResponse>();
@@ -187,7 +172,6 @@ namespace MagicVilla_Web.Controllers
                 return View(villaNumberVM);
             }
 
-
             return NotFound();
         }
 
@@ -203,10 +187,12 @@ namespace MagicVilla_Web.Controllers
                 TempData["success"] = "Villa number deleted successfully";
                 return RedirectToAction(nameof(IndexVillaNumber));
             }
-			string errorMsg = response?.ErrorMessages.FirstOrDefault();
-
-			TempData["error"] = !string.IsNullOrEmpty(errorMsg) ? errorMsg : "Error encountered.";
-			return View(model);
+            else
+            {
+                TempData["error"] = (response.ErrorMessages != null && response.ErrorMessages.Count > 0) ?
+                    response.ErrorMessages[0] : "Error Encountered";
+            }
+            return View(model);
         }
     }
 }
