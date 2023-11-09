@@ -1,4 +1,3 @@
-using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Extensions;
 using MagicVilla_VillaAPI.Filters;
 using MagicVilla_VillaAPI.Middlewares;
@@ -43,6 +42,9 @@ builder.Services.AddResponseCaching();
 
 
 var app = builder.Build();
+
+app.AddHealthChecksMaps();
+
 app.UseSwagger();
 
 // Configure the HTTP request pipeline.

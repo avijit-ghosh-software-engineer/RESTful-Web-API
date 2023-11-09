@@ -13,6 +13,7 @@ namespace MagicVilla_VillaAPI.Extensions
             builder.ConnectionStringContainer();
             builder.SwaggerGenContainer();
 			builder.JWTAuthenticationContainer();
+            builder.AddHealthChecks();
 		}
     }
 }
